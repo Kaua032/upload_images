@@ -19,4 +19,14 @@ const CreatePicture = async (req, res) => {
   }
 };
 
-module.exports = { CreatePicture };
+const FindAll = async (req, res) => {
+  try {
+    const pictures = await Picture.find();
+
+    res.json(pictures);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { CreatePicture, FindAll };
