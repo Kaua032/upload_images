@@ -1,5 +1,7 @@
 const Picture = require("../models/Picture.js");
 
+const fs = require("fs");
+
 const CreatePicture = async (req, res) => {
   try {
     const { name } = req.body;
@@ -29,4 +31,23 @@ const FindAll = async (req, res) => {
   }
 };
 
-module.exports = { CreatePicture, FindAll };
+const Remove = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const picture = await Picture.findById(id);
+
+    if (!picture) {
+      return res.status(404).json({ message: "Imagem não encontrada" });
+    }
+
+    fs.unlinkSync(picture.src);
+
+    await Picture.deleteOne({ id });
+
+    res.json({ message: "Imagem removida" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { CreatePicture, FindAll, Remove };
